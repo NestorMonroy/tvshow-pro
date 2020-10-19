@@ -1,17 +1,20 @@
 import axios from 'axios'
-import Thumbnail from '../../components/Thumbnail';
 import Link from 'next/link'
+import Thumbnail from '../../components/Thumbnail';
 
-const Home = ({ shows }) => {
+
+const Home = ({ shows, country }) => {
 
     const renderShows = () => {
         return shows.map((showItem, index) => {
             const { show } = showItem;
             return (
                 <li key={index} >
-                    <Thumbnail 
-                        imageUrl={(show.image && show.image.medium || undefined)} 
-                        caption={show.name}  
+                    <Thumbnail
+                        imageUrl={(show.image && show.image.medium || undefined)}
+                        caption={show.name}
+                        href="/[country]/[showId]"
+                        as={`/${country}/${show.id}`}
                     />
                 </li>
             )
@@ -20,18 +23,18 @@ const Home = ({ shows }) => {
 
     return (
         <div className="home">
-        <ul className="tvshows-grid">
-            {renderShows()}
+            <ul className="tvshows-grid">
+                {renderShows()}
 
-            <style jsx>{`
+                <style jsx>{`
                 .tvshows-grid {
                     display: grid;
                     grid-template-columns: 1fr 1fr;
                     gap: 10px;
                 }
             `}</style>
-        </ul>
-    </div>
+            </ul>
+        </div>
     )
 }
 
@@ -42,7 +45,8 @@ Home.getInitialProps = async context => {
     const response = await axios.get(`http://api.tvmaze.com/schedule?country=${country}&date=2014-12-01`)
 
     return {
-        shows: response.data
+        shows: response.data,
+        country
     }
 }
 
