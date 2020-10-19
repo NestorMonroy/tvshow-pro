@@ -24,12 +24,12 @@ class MyApp extends App {
 
 				<style jsx>{`
 					@font-face {
-						font-family: 'raleway';
-						
+						font-family: 'roboto';
+						src: url('/fonts/roboto/Roboto-Regular.ttf') format('truetype');
 					}
 
 					:global(html) {
-						font-family: 'raleway';
+						font-family: 'roboto';
 					}
 
 					:global(ul) {
