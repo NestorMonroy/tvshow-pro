@@ -1,9 +1,13 @@
-import axios from 'axios'
-import Link from 'next/link'
+import axios from 'axios';
+import Error from 'next/error';
 import Thumbnail from '../../components/Thumbnail';
 
 
-const Home = ({ shows, country }) => {
+const Home = ({ shows, country, statusCode }) => {
+    if (statusCode) {
+		return <Error statusCode={statusCode} />;
+	}
+
 
     const renderShows = () => {
         return shows.map((showItem, index) => {
@@ -39,15 +43,22 @@ const Home = ({ shows, country }) => {
 }
 
 Home.getInitialProps = async context => {
-    //console.log(context)
-    const country = context.query.country || 'us';
+	try {
+		const country = context.query.country || 'us';
 
-    const response = await axios.get(`http://api.tvmaze.com/schedule?country=${country}&date=2014-12-01`)
+		const response = await axios.get(
+			`https://api.tvmaze.com/schedule?country=${country}&date=2014-12-01`
+		);
 
-    return {
-        shows: response.data,
-        country
-    }
-}
+		return {
+			shows: response.data,
+			country
+		};
+	} catch (error) {
+		return {
+			statusCode: error.response ? error.response.status : 500
+		};
+	}
+};
 
 export default Home;

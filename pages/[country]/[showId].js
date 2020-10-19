@@ -1,32 +1,36 @@
 import axios from 'axios';
 import parse from 'html-react-parser';
 import Cast from '../../components/Cast';
+import Error from 'next/error';
+import CustomError from '../_error'
 
-const ShowDetails = ({ show = {} }) => {
-  const { name, image, summary, _embedded }= show;
+const ShowDetails = ({ show = {}, statusCode }) => {
+	const { name, image, summary, _embedded } = show;
 
-  return (
-    <div className="show-details">
-			<Header/>
-      <div 
-        className="show-details__poster"
-        style={{backgroundImage: `url(${image.original})` }}
+	if (statusCode) {
+		return <CustomError statusCode={statusCode} />;
+	}
 
-      ></div>
-      <h1> {name} </h1>
+	return (
+		<div className="show-details">
+			<div
+				className="show-details__poster"
+				style={{ backgroundImage: `url(${image.original})` }}
+			></div>
+			<h1>{name}</h1>
 			{parse(summary)}
 
 			{_embedded.cast.length > 0 && <Cast cast={_embedded.cast} />}
 
-      <style jsx>{`
+			<style jsx>{`
 				.show-details__poster {
 					height: 200px;
 					background-size: cover;
 				}
 			`}</style>
-    </div>
-  )
-}
+		</div>
+	);
+};
 
 ShowDetails.getInitialProps = async ({ query }) => {
 	try {
